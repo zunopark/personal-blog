@@ -7,8 +7,8 @@ interface PostPageProps {
 }
 
 // Generate static paths for SSG
-export async function generateStaticParams() {
-  return getAllPostSlugs();
+export function generateStaticParams() { // async 제거
+  return getAllPostSlugs(); // await 제거
 }
 
 export default async function PostPage({ params }: PostPageProps) {
