@@ -7,8 +7,6 @@
     @apply scroll-smooth;
   }
   /* body 폰트는 layout.tsx 에서 직접 적용 */
-  /* h1, h2, ... 폰트는 각 컴포넌트에서 직접 적용 */
-  a {
-    @apply text-blue-600 hover:text-blue-700 transition-colors duration-200;
-  }
+  /* h1, h2, ... 폰트 스타일은 각 컴포넌트에서 직접 적용 */
+  /* a 태그 스타일은 컴포넌트에서 직접 적용 또는 기본값 유지 */
 }
