@@ -2,18 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gray-50 text-gray-800;
-}
-
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  @apply text-gray-900;
-}
-
-.prose p {
-  @apply text-gray-700;
-}
-
-.prose a {
-  @apply text-blue-600 hover:underline;
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  body {
+    @apply font-sans text-gray-800 antialiased bg-gray-50;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-gray-900;
+  }
+  a {
+    @apply text-blue-600 hover:text-blue-700 transition-colors duration-200;
+  }
 }

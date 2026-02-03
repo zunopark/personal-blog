@@ -19,11 +19,15 @@ export default async function PostPage({ params }: PostPageProps) {
   const { frontMatter, content } = postData;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <article className="prose lg:prose-xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4 text-gray-900">{frontMatter.title}</h1>
-        <p className="text-lg text-gray-500 mb-8">{frontMatter.date}</p>
-        <div className="markdown-body">
+    <div className="pt-12 pb-20">
+      <article className="prose dark:prose-invert lg:prose-xl mx-auto max-w-none text-gray-800">
+        <h1 className="text-5xl font-extrabold mb-4 leading-tight text-gray-900">
+          {frontMatter.title}
+        </h1>
+        <p className="text-xl text-gray-500 mb-10">
+          {new Date(frontMatter.date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </p>
+        <div className="markdown-body leading-relaxed text-lg text-gray-700">
           <MDXRemote source={content} />
         </div>
       </article>
