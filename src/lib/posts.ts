@@ -3,7 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { serialize } from 'next-mdx-remote/serialize';
 
-const POSTS_DIRECTORY = path.join(process.cwd(), 'content/blog'); // 경로 수정: src/ 제거
+const POSTS_DIRECTORY = path.join(process.cwd(), 'content/blog');
 
 export type FrontMatter = {
   title: string;
@@ -27,11 +27,10 @@ export function getSortedPostsData() {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data } = matter(fileContents);
 
-    const { slug: _ignored, ...frontMatterWithoutSlug } = data as FrontMatter; // slug 제외
-
+    // Option B: Use Omit to tell TypeScript you are spreading everything except slug
     return {
-      slug,
-      ...frontMatterWithoutSlug, // slug 제외된 frontMatter 스프레드
+      ...(data as Omit<FrontMatter, 'slug'>),
+      slug, // slug를 마지막에 명시적으로 추가
     };
   });
 
