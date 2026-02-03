@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body>
+      <body className="font-sans text-gray-800 antialiased bg-gray-50"> {/* 여기에 font-sans 적용 */}
         <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-gray-50">
           <div className="w-full max-w-4xl">
             {children}
