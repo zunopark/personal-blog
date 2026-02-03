@@ -24,7 +24,7 @@ export function getSortedPostsData() {
   const allPostsData = fileNames.map((fileName) => {
     const slug = fileName.replace(/\.mdx?$/, '');
     const fullPath = path.join(POSTS_DIRECTORY, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const fileContents = fs.readFileSync(fullPath, 'utf8'); // 여기서 fileContents 정의
     const { data } = matter(fileContents);
 
     // Option B: Use Omit to tell TypeScript you are spreading everything except slug
@@ -44,7 +44,7 @@ export function getSortedPostsData() {
 }
 
 export async function getPostData(slug: string) {
-  const fullPath = path.join(POSTS_DIRECTORY, `${slug}.mdx`);
+  const fullPath = path.join(POSTS_DIRECTORY, `${slug}.mdx`); // 원래대로 복구
   const fileContents = fs.readFileSync(fullPath, 'utf8');
 
   // Use gray-matter to parse the post metadata section
@@ -54,7 +54,7 @@ export async function getPostData(slug: string) {
   const mdxSource = await serialize(content, { scope: data });
 
   return {
-    slug,
+    slug: slug.replace(/\.mdx?$/, ''), // 항상 확장자 제거된 slug 반환
     frontMatter: data as FrontMatter,
     content: mdxSource,
   };
