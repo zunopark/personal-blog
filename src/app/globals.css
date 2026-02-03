@@ -7,9 +7,7 @@
     @apply scroll-smooth;
   }
   /* body 폰트는 layout.tsx 에서 직접 적용 */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-gray-900;
-  }
+  /* h1, h2, ... 폰트는 각 컴포넌트에서 직접 적용 */
   a {
     @apply text-blue-600 hover:text-blue-700 transition-colors duration-200;
   }
