@@ -3,7 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { serialize } from 'next-mdx-remote/serialize';
 
-const POSTS_DIRECTORY = path.join(process.cwd(), 'content/blog');
+const POSTS_DIRECTORY = path.join(process.cwd(), 'content/blog'); // 경로 수정: src/ 제거
 
 export type FrontMatter = {
   title: string;
@@ -25,11 +25,13 @@ export function getSortedPostsData() {
     const slug = fileName.replace(/\.mdx?$/, '');
     const fullPath = path.join(POSTS_DIRECTORY, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
+    const { data } = matter(fileContents);
+
+    const { slug: _ignored, ...frontMatterWithoutSlug } = data as FrontMatter; // slug 제외
 
     return {
       slug,
-      ...(data as FrontMatter),
+      ...frontMatterWithoutSlug, // slug 제외된 frontMatter 스프레드
     };
   });
 
