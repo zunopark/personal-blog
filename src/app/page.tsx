@@ -1,5 +1,6 @@
+import { GraphClient } from '@/components/GraphClient';
 import Link from 'next/link';
-import { GraphView } from '@/components/GraphView';
+
 
 export default function Home() {
   // 테스트 그래프 데이터
@@ -41,17 +42,13 @@ export default function Home() {
         </div>
 
         {/* 그래프 뷰 테스트 */}
-        <div className="mt-16 pt-8 border-t border-gray-200">
+        {/* <div className="mt-16 pt-8 border-t border-gray-200">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">📊 블로그 글 연결 맵</h2>
           <div className="flex justify-center">
             <GraphView nodes={graphNodes} edges={graphEdges} />
           </div>
-        </div>
-      </div>
-      
-      {/* 하단 장식 */}
-      <div className="absolute bottom-8 text-gray-400 text-sm">
-        <p>Next.js 16 · React 19 · MDX</p>
+        </div> */}
+        <GraphClient />
       </div>
     </div>
   );
