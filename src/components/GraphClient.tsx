@@ -8,5 +8,9 @@ const GraphView = dynamic(
 );
 
 export function GraphClient() {
-  return <GraphView />;
+  return (
+    <div className="w-full h-full min-h-[50vh] max-w-full overflow-hidden">
+      <GraphView />
+    </div>
+  );
 }

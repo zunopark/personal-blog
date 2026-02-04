@@ -17,7 +17,8 @@ export const GraphView = () => {
   };
 
   return (
-    <ForceGraph2D
+    <div className="w-full h-full max-w-full overflow-hidden">
+      <ForceGraph2D
       graphData={data}
       nodeLabel="id"
       nodeAutoColorBy="group"
@@ -37,5 +38,6 @@ export const GraphView = () => {
       cooldownTicks={100}
       warmupTicks={100}
     />
+    </div>
   );
 };
