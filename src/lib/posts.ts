@@ -104,3 +104,51 @@ export function getAllTags() {
   
   return Array.from(tagsSet).sort();
 }
+
+export type GraphNodeData = {
+  id: string;
+  title: string;
+  slug: string;
+  group: number;
+};
+
+export type GraphLinkData = {
+  source: string;
+  target: string;
+};
+
+export type GraphData = {
+  nodes: GraphNodeData[];
+  links: GraphLinkData[];
+};
+
+/**
+ * 그래프 뷰용 노드·링크 데이터 반환.
+ * 노드: 각 블로그 글 (id=slug, title=프론트매터 title).
+ * 링크: 공통 태그가 있는 글끼리 연결.
+ */
+export function getGraphData(): GraphData {
+  const allPosts = getSortedPostsData();
+  const nodes: GraphNodeData[] = allPosts.map((post, index) => ({
+    id: post.slug,
+    title: post.title,
+    slug: post.slug,
+    group: index % 2 + 1, // 1 또는 2 (기존 그룹 스타일 유지)
+  }));
+
+  const linkKeySet = new Set<string>();
+  const links: GraphLinkData[] = [];
+
+  allPosts.forEach((post) => {
+    const related = getRelatedPosts(post.slug, post.tags, 10);
+    related.forEach((relatedPost) => {
+      const key = [post.slug, relatedPost.slug].sort().join('|');
+      if (!linkKeySet.has(key)) {
+        linkKeySet.add(key);
+        links.push({ source: post.slug, target: relatedPost.slug });
+      }
+    });
+  });
+
+  return { nodes, links };
+}
