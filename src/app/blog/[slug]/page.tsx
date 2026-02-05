@@ -1,8 +1,8 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getPostData, getAllPostSlugs, getRelatedPosts } from '@/lib/posts';
 import { notFound } from 'next/navigation';
-import { mdxComponents } from '@/components/MDXComponents';
-import { Tag } from '@/components/Tag';
+import { mdxComponents } from '@/common/components/MDXComponents';
+import { Tag } from '@/common/components/Tag';
 import Link from 'next/link';
 
 interface PostPageProps {

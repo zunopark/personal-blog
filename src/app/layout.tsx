@@ -1,8 +1,9 @@
 import './globals.css';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/common/components/ui/button';
+import { Separator } from '@/common/components/ui/separator';
+import { ScrollToTop } from '@/common/components/ScrollToTop';
 
 export const metadata: Metadata = {
   title: '루카 개인 블로그',
@@ -49,6 +50,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p className="text-muted-foreground/80 text-xs mt-2">Built with Next.js 16 · React 19 · MDX</p>
           </div>
         </footer>
+
+        {/* 플로팅: 맨 위로 스크롤 */}
+        <ScrollToTop />
       </body>
     </html>
   );

@@ -97,12 +97,18 @@ export function getRelatedPosts(currentSlug: string, currentTags: string[], limi
 export function getAllTags() {
   const allPosts = getSortedPostsData();
   const tagsSet = new Set<string>();
-  
+
   allPosts.forEach(post => {
     post.tags.forEach(tag => tagsSet.add(tag));
   });
-  
+
   return Array.from(tagsSet).sort();
+}
+
+// 특정 태그가 포함된 글 목록 가져오기 (날짜 내림차순)
+export function getPostsByTag(tag: string) {
+  const allPosts = getSortedPostsData();
+  return allPosts.filter(post => post.tags.includes(tag));
 }
 
 export type GraphNodeData = {

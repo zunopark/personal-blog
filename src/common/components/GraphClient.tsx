@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import type { GraphData } from '@/lib/posts';
 
 const GraphView = dynamic(
-  () => import('@/components/GraphView').then((mod) => mod.GraphView),
+  () => import('@/common/components/GraphView').then((mod) => mod.GraphView),
   { ssr: false }
 );
 

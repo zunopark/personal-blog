@@ -16,7 +16,7 @@ export function Callout({ type = 'info', children }: CalloutProps) {
   const icons = {
     info: '💡',
     warning: '⚠️',
-    error: '❌',
+    error: '🔻',
   };
 
   return (
