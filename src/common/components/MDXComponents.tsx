@@ -141,6 +141,56 @@ function Blockquote({ children, ...props }: React.HTMLAttributes<HTMLQuoteElemen
   );
 }
 
+// 테이블 스타일링 (마크다운 표 문법 대응)
+function Table({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) {
+  return (
+    <div className="my-6 overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+      <table className="w-full border-collapse text-left text-gray-800" {...props}>
+        {children}
+      </table>
+    </div>
+  );
+}
+
+function Thead({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
+  return (
+    <thead className="bg-gray-100 border-b-2 border-gray-200" {...props}>
+      {children}
+    </thead>
+  );
+}
+
+function Tbody({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
+  return <tbody className="divide-y divide-gray-200" {...props}>{children}</tbody>;
+}
+
+function Tr({ children, ...props }: React.HTMLAttributes<HTMLTableRowElement>) {
+  return (
+    <tr className="hover:bg-gray-50 transition-colors" {...props}>
+      {children}
+    </tr>
+  );
+}
+
+function Th({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <th
+      className="px-4 py-3 text-sm font-semibold text-gray-900"
+      {...props}
+    >
+      {children}
+    </th>
+  );
+}
+
+function Td({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <td className="px-4 py-3 text-sm text-gray-700" {...props}>
+      {children}
+    </td>
+  );
+}
+
 // 모든 커스텀 컴포넌트를 export
 export const mdxComponents = {
   Callout,
@@ -154,4 +204,10 @@ export const mdxComponents = {
   ul: Ul,
   ol: Ol,
   blockquote: Blockquote,
+  table: Table,
+  thead: Thead,
+  tbody: Tbody,
+  tr: Tr,
+  th: Th,
+  td: Td,
 };

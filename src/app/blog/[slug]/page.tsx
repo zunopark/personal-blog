@@ -1,8 +1,12 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
+import type { Metadata } from 'next';
 import { getPostData, getAllPostSlugs, getRelatedPosts } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import { mdxComponents } from '@/common/components/MDXComponents';
 import { Tag } from '@/common/components/Tag';
+import { formatDateKo } from '@/lib/utils';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 import Link from 'next/link';
 
 interface PostPageProps {
@@ -11,6 +15,34 @@ interface PostPageProps {
 
 export function generateStaticParams() {
   return getAllPostSlugs();
+}
+
+export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
+  const resolvedParams = await Promise.resolve(params);
+  if (!resolvedParams?.slug || typeof resolvedParams.slug !== 'string') {
+    return {};
+  }
+  try {
+    const { frontMatter } = await getPostData(resolvedParams.slug);
+    const url = `${SITE_URL}/blog/${resolvedParams.slug}`;
+    return {
+      title: frontMatter.title,
+      description: frontMatter.description,
+      openGraph: {
+        title: frontMatter.title,
+        description: frontMatter.description,
+        type: 'article',
+        url,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: frontMatter.title,
+        description: frontMatter.description,
+      },
+    };
+  } catch {
+    return {};
+  }
 }
 
 export default async function PostPage({ params }: PostPageProps) {
@@ -41,7 +73,7 @@ export default async function PostPage({ params }: PostPageProps) {
         
         {/* 날짜 */}
         <p className="text-xl text-gray-500 mb-6">
-          {new Date(frontMatter.date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+          {formatDateKo(frontMatter.date)}
         </p>
         
         {/* 태그 */}
@@ -55,7 +87,11 @@ export default async function PostPage({ params }: PostPageProps) {
         
         {/* 본문 */}
         <div className="markdown-body leading-relaxed text-lg border-t border-gray-200 pt-10">
-          <MDXRemote source={content} components={mdxComponents} />
+          <MDXRemote
+          source={content}
+          components={mdxComponents}
+          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+        />
         </div>
       </article>
       

@@ -64,6 +64,56 @@ export const GraphView = ({ initialGraphData }: GraphViewProps) => {
     return src === hoveredNode.id || tgt === hoveredNode.id;
   };
 
+  const getNodeCanvasObject = (node: GraphDataType['nodes'][0], ctx: CanvasRenderingContext2D, globalScale: number) => {
+    const x = (node as { x?: number }).x ?? 0;
+    const y = (node as { y?: number }).y ?? 0;
+    const radius = NODE_RADIUS_BASE / globalScale;
+    const isHighlighted = hoveredNode && highlightedNodeIds.has(String(node.id));
+    const nodeColor = isHighlighted ? HIGHLIGHT_NODE_COLOR : (node.group === 1 ? DEFAULT_NODE_COLOR : GROUP2_COLOR);
+
+    // 원(노드) 그리기
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = nodeColor;
+    ctx.fill();
+    ctx.strokeStyle = NODE_STROKE_COLOR;
+    ctx.lineWidth = 1 / globalScale;
+    ctx.stroke();
+
+    // 원 아래 타이틀
+    const label = (node as { title?: string }).title ?? node.id;
+    const fontSize = 11 / globalScale;
+    ctx.font = `${fontSize}px Sans-Serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = isHighlighted ? LABEL_HIGHLIGHT_COLOR : LABEL_COLOR;
+    const labelY = y + radius + LABEL_GAP / globalScale;
+    ctx.fillText(label, x, labelY);
+  };
+
+  const getNodePointerAreaPaint = (node: GraphDataType['nodes'][0], paintColor: string, ctx: CanvasRenderingContext2D, globalScale: number) => {
+    const x = (node as { x?: number }).x ?? 0;
+    const y = (node as { y?: number }).y ?? 0;
+    const radius = (NODE_RADIUS_BASE / globalScale) * 2; // 클릭/호버 영역을 넉넉히
+    ctx.fillStyle = paintColor;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+    ctx.fill();
+  };
+
+  const handleNodeClick = (node: GraphDataType['nodes'][0]) => {
+    const slug = (node as GraphDataType['nodes'][0]).slug;
+    if (slug) router.push(`/blog/${slug}`);
+  };
+
+  const handleNodeHover = (node: GraphDataType['nodes'][0], prev: GraphDataType['nodes'][0] | null) => {
+    setHoveredNode(node as GraphDataType['nodes'][0] | null);
+  };
+
+  const handlePointerCursor = (obj: any) => {
+    return !!(obj && (obj as GraphDataType['nodes'][0]).slug);
+  };
+
   return (
     <div
       ref={containerRef}
@@ -76,49 +126,15 @@ export const GraphView = ({ initialGraphData }: GraphViewProps) => {
         graphData={data}
         nodeLabel="title"
         nodeAutoColorBy="group"
-        nodeCanvasObject={(node, ctx, globalScale) => {
-          const x = node.x ?? 0;
-          const y = node.y ?? 0;
-          const radius = NODE_RADIUS_BASE / globalScale;
-          const isHighlighted = hoveredNode && highlightedNodeIds.has(String(node.id));
-          const nodeColor = isHighlighted ? HIGHLIGHT_NODE_COLOR : (node.group === 1 ? DEFAULT_NODE_COLOR : GROUP2_COLOR);
-
-          // 원(노드) 그리기
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, 2 * Math.PI);
-          ctx.fillStyle = nodeColor;
-          ctx.fill();
-          ctx.strokeStyle = NODE_STROKE_COLOR;
-          ctx.lineWidth = 1 / globalScale;
-          ctx.stroke();
-
-          // 원 아래 타이틀
-          const label = (node as { title?: string }).title ?? node.id;
-          const fontSize = 11 / globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'top';
-          ctx.fillStyle = isHighlighted ? LABEL_HIGHLIGHT_COLOR : LABEL_COLOR;
-          const labelY = y + radius + LABEL_GAP / globalScale;
-          ctx.fillText(label, x, labelY);
-        }}
+        nodeCanvasObject={getNodeCanvasObject}
         nodePointerAreaPaint={(node, paintColor, ctx, globalScale) => {
-          const x = node.x ?? 0;
-          const y = node.y ?? 0;
-          const radius = (NODE_RADIUS_BASE / globalScale) * 2; // 클릭/호버 영역을 넉넉히
-          ctx.fillStyle = paintColor;
-          ctx.beginPath();
-          ctx.arc(x, y, radius, 0, 2 * Math.PI);
-          ctx.fill();
+          getNodePointerAreaPaint(node, paintColor, ctx, globalScale);
         }}
         linkColor={(link) => (isLinkHighlighted(link) ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR)}
         backgroundColor="#ffffff"
-        onNodeClick={(node) => {
-          const slug = (node as GraphDataType['nodes'][0]).slug;
-          if (slug) router.push(`/blog/${slug}`);
-        }}
-        onNodeHover={(node, prev) => setHoveredNode(node as GraphDataType['nodes'][0] | null)}
-        showPointerCursor={(obj) => !!(obj && (obj as GraphDataType['nodes'][0]).slug)}
+        onNodeClick={handleNodeClick}
+        onNodeHover={handleNodeHover as any}
+        showPointerCursor={handlePointerCursor}
         cooldownTicks={100}
         warmupTicks={100}
       />

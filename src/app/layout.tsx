@@ -4,22 +4,26 @@ import Link from 'next/link';
 import { Button } from '@/common/components/ui/button';
 import { Separator } from '@/common/components/ui/separator';
 import { ScrollToTop } from '@/common/components/ScrollToTop';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: '루카 개인 블로그',
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
   description: '사회/경제/문화/개발 등 다양한 주제의 글을 기록합니다.',
   openGraph: {
-    title: '루카 개인 블로그',
+    title: SITE_NAME,
     description: '사회/경제/문화/개발 등 다양한 주제의 글을 기록합니다.',
     type: 'website',
-    url: 'https://your-blog-url.com',
+    url: SITE_URL,
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
-      <body className="min-h-screen font-sans text-foreground antialiased bg-background">
+    <html lang="ko" suppressHydrationWarning>
+      <body className="min-h-screen font-sans text-foreground antialiased bg-background" suppressHydrationWarning>
         {/* Navigation Header */}
         <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-lg">
           <nav className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
