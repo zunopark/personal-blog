@@ -93,16 +93,23 @@ export function getRelatedPosts(currentSlug: string, currentTags: string[], limi
   return sortedPosts.slice(0, limit);
 }
 
-// 모든 태그 목록 가져오기
-export function getAllTags() {
+// 태그 이름과 해당 태그가 붙은 글 개수
+export type TagWithCount = { tag: string; count: number };
+
+// 모든 태그 목록 가져오기 (태그별 포스트 개수 포함)
+export function getAllTags(): TagWithCount[] {
   const allPosts = getSortedPostsData();
-  const tagsSet = new Set<string>();
+  const tagCountMap = new Map<string, number>();
 
   allPosts.forEach(post => {
-    post.tags.forEach(tag => tagsSet.add(tag));
+    post.tags.forEach(tag => {
+      tagCountMap.set(tag, (tagCountMap.get(tag) ?? 0) + 1);
+    });
   });
 
-  return Array.from(tagsSet).sort();
+  return Array.from(tagCountMap.entries())
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => a.tag.localeCompare(b.tag));
 }
 
 // 특정 태그가 포함된 글 목록 가져오기 (날짜 내림차순)
@@ -111,22 +118,8 @@ export function getPostsByTag(tag: string) {
   return allPosts.filter(post => post.tags.includes(tag));
 }
 
-export type GraphNodeData = {
-  id: string;
-  title: string;
-  slug: string;
-  group: number;
-};
-
-export type GraphLinkData = {
-  source: string;
-  target: string;
-};
-
-export type GraphData = {
-  nodes: GraphNodeData[];
-  links: GraphLinkData[];
-};
+import type { GraphData, GraphLinkData, GraphNodeData } from './graphTypes';
+export type { GraphNodeData, GraphLinkData, GraphData } from './graphTypes';
 
 /**
  * 그래프 뷰용 노드·링크 데이터 반환.
@@ -151,7 +144,11 @@ export function getGraphData(): GraphData {
       const key = [post.slug, relatedPost.slug].sort().join('|');
       if (!linkKeySet.has(key)) {
         linkKeySet.add(key);
-        links.push({ source: post.slug, target: relatedPost.slug });
+        links.push({
+          source: post.slug,
+          target: relatedPost.slug,
+          value: relatedPost.score, // 공통 태그 수 → 링크 두께(클수록 두꺼움)
+        });
       }
     });
   });

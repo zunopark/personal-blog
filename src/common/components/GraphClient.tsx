@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import type { GraphData } from '@/lib/posts';
+import type { GraphData } from '@/lib/graphTypes';
 
 const GraphView = dynamic(
   () => import('@/common/components/GraphView').then((mod) => mod.GraphView),

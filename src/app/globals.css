@@ -40,6 +40,18 @@ html {
   border-radius: 0.25rem;
 }
 
+/* 헤더 검색: 포커스 링 제거, 브라우저 검색 X 버튼 숨김 */
+.header-search-input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.header-search-input::-webkit-search-cancel-button,
+.header-search-input::-webkit-search-decoration,
+.header-search-input::-webkit-search-results-button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

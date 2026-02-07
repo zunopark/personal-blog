@@ -1,18 +1,26 @@
 import Link from 'next/link';
 import { getSortedPostsData } from '@/lib/posts';
 import { Tag } from '@/common/components/Tag';
+import { Button } from '@/common/components/ui/button';
+import { BlogPostSidebar } from '@/common/components/BlogPostSidebar';
+
+const SORT_OPTIONS = ['최신순', '조회순', '댓글순'] as const;
 
 export default function BlogList() {
   const allPostsData = getSortedPostsData();
   return (
     <div className="pt-16 pb-24 px-6 max-w-4xl mx-auto">
-      <div className="mb-16 text-center">
-        <h1 className="text-6xl font-extrabold text-gray-900 mb-4 tracking-tight">
-          Blog
-        </h1>
-        <p className="text-xl text-gray-500">
-          생각과 경험을 기록합니다
-        </p>
+      <div className="mb-16 flex flex-wrap justify-center gap-2">
+        {SORT_OPTIONS.map((label, i) => (
+          <Button
+            key={label}
+            variant={i === 0 ? 'default' : 'outline'}
+            size="sm"
+            className="rounded-full font-medium"
+          >
+            {label}
+          </Button>
+        ))}
       </div>
       
       <div className="space-y-6">

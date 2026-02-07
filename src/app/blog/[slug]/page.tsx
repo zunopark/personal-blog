@@ -5,6 +5,7 @@ import { getPostData, getAllPostSlugs, getRelatedPosts } from '@/lib/posts';
 import { notFound } from 'next/navigation';
 import { mdxComponents } from '@/common/components/MDXComponents';
 import { Tag } from '@/common/components/Tag';
+import { BlogPostSidebar } from '@/common/components/BlogPostSidebar';
 import { formatDateKo } from '@/lib/utils';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
 import Link from 'next/link';
@@ -64,75 +65,81 @@ export default async function PostPage({ params }: PostPageProps) {
   const relatedPosts = getRelatedPosts(slug, frontMatter.tags, 3);
 
   return (
-    <div className="pt-12 pb-20 px-6 max-w-4xl mx-auto">
-      <article className="text-gray-800">
-        {/* 제목 */}
-        <h1 className="text-5xl font-extrabold mb-4 leading-tight text-gray-900">
-          {frontMatter.title}
-        </h1>
-        
-        {/* 날짜 */}
-        <p className="text-xl text-gray-500 mb-6">
-          {formatDateKo(frontMatter.date)}
-        </p>
-        
-        {/* 태그 */}
-        {frontMatter.tags && frontMatter.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-10">
-            {frontMatter.tags.map(tag => (
-              <Tag key={tag} tag={tag} clickable={false} />
-            ))}
-          </div>
-        )}
-        
-        {/* 본문 */}
-        <div className="markdown-body leading-relaxed text-lg border-t border-gray-200 pt-10">
-          <MDXRemote
-          source={content}
-          components={mdxComponents}
-          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-        />
+    <div className="pt-12 pb-20 px-6 max-w-6xl mx-auto">
+      <div className="flex flex-col lg:flex-row gap-12 lg:gap-10">
+        {/* 메인: 글 본문 + 연관 글 */}
+        <div className="min-w-0 flex-1 max-w-4xl">
+          <article className="text-gray-800">
+            {/* 제목 */}
+            <h1 className="text-5xl font-extrabold mb-4 leading-tight text-gray-900">
+              {frontMatter.title}
+            </h1>
+            
+            {/* 날짜 */}
+            <p className="text-xl text-gray-500 mb-6">
+              {formatDateKo(frontMatter.date)}
+            </p>
+            
+            {/* 태그 */}
+            {frontMatter.tags && frontMatter.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-10">
+                {frontMatter.tags.map(tag => (
+                  <Tag key={tag} tag={tag} clickable={false} />
+                ))}
+              </div>
+            )}
+            
+            {/* 본문 */}
+            <div className="markdown-body leading-relaxed text-lg border-t border-gray-200 pt-10">
+              <MDXRemote
+                source={content}
+                components={mdxComponents}
+                options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+              />
+            </div>
+          </article>
+          
+          {/* 연관 글 섹션 */}
+          {relatedPosts.length > 0 && (
+            <aside className="mt-16 pt-12 border-t-2 border-gray-200">
+              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+                📚 연관된 글
+              </h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {relatedPosts.map(post => (
+                  <Link 
+                    key={post.slug} 
+                    href={`/blog/${post.slug}`}
+                    className="block group"
+                  >
+                    <article className="bg-gray-50 p-6 rounded-xl border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all">
+                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                        {post.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {post.commonTags?.map(tag => (
+                          <span 
+                            key={tag}
+                            className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
+            </aside>
+          )}
         </div>
-      </article>
-      
-      {/* 연관 글 섹션 */}
-      {relatedPosts.length > 0 && (
-        <aside className="mt-16 pt-12 border-t-2 border-gray-200">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">
-            📚 연관된 글
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {relatedPosts.map(post => (
-              <Link 
-                key={post.slug} 
-                href={`/blog/${post.slug}`}
-                className="block group"
-              >
-                <article className="bg-gray-50 p-6 rounded-xl border border-gray-200 hover:shadow-lg hover:border-blue-300 transition-all">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {post.description}
-                  </p>
-                  
-                  {/* 공통 태그 표시 */}
-                  <div className="flex flex-wrap gap-2">
-                    {post.commonTags?.map(tag => (
-                      <span 
-                        key={tag}
-                        className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
-        </aside>
-      )}
+
+        <BlogPostSidebar />
+      </div>
     </div>
   );
 }

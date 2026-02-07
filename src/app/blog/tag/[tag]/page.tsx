@@ -11,7 +11,7 @@ export default async function BlogTagPage({ params }: Props) {
   const posts = getPostsByTag(decodedTag);
   const allTags = getAllTags();
 
-  if (!allTags.includes(decodedTag)) {
+  if (!allTags.some((t) => t.tag === decodedTag)) {
     notFound();
   }
 
